@@ -348,22 +348,21 @@
 
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;      PROLOG       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-
 (use-package sweeprolog
+  :ensure t
   :defer t)
 
 (add-to-list 'auto-mode-alist '("\\.pl\\'" . prolog-mode))
 
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;       RUST        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
-
 
 (use-package rustic
   :ensure t
