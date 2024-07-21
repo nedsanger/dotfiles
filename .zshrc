@@ -1,4 +1,4 @@
-path+=($HOME'/bin/')
+path+=('$HOME/bin/')
 path+=('$HOME/.local/bin')
 
 export EDITOR=/Applications/Emacs.app/Contents/MacOS/Emacs
