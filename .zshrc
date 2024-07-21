@@ -1,5 +1,6 @@
 path+=($HOME'/bin/')
 path+=($HOME'/.local/bin')
+path+=($HOME'/.emacs.d/doom/bin/')
 
 export EDITOR=/Applications/Emacs.app/Contents/MacOS/Emacs
 

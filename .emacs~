@@ -194,6 +194,7 @@
 
 ;; make dired-omit-mode and dired-hide-details-mode persist across buffers
 (define-globalized-minor-mode global-dired-omit-mode dired-omit-mode
+  dired-omit-mode
   :predicate '(dired-mode)
   :group 'dired)
 
