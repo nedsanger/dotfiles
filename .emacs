@@ -20,7 +20,6 @@
  '(eshell-scroll-to-bottom-on-output nil)
  '(gc-cons-threshold 12800000)
  '(global-auto-revert-mode nil)
- '(global-dired-omit-mode t)
  '(global-dired-omit-modes '(dired-mode))
  '(global-display-line-numbers-mode nil)
  '(global-hl-line-mode nil)
@@ -107,6 +106,8 @@
  '(tooltip ((t (:foreground "black" :background "lightyellow" :inherit ##))))
  '(variable-pitch ((t nil))))
 
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;        MISC       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -169,17 +170,48 @@
 (setq ls-lisp-dirs-first t)
 (setq ls-lisp-use-insert-directory-program nil)
 
+;; make dired-omit-mode a global mode
+;; and dired-hide-details-mode a global mode which
+;; doesn't apply in the dired sidebar
+(define-minor-mode my-dired-hide-details-mode
+  "Toggles dired-hide-details-mode in all dired buffers except for the dired sidebar."
+  :init-value nil
+  :group 'dired)
+
+(add-hook 'my-dired-hide-details-mode-hook
+	  (lambda ()
+	    (if (and (derived-mode-p 'dired-mode)
+		     (not (derived-mode-p 'dired-sidebar-mode)))
+		(progn
+		  (dired-hide-details-mode 'toggle)
+		  (setq my-dired-hide-details-mode dired-hide-details-mode)))))
+
+(add-hook 'dired-hide-details-mode-hook (lambda ()
+				  (setq my-dired-hide-details-mode dired-hide-details-mode)))
+
+(define-globalized-minor-mode global-dired-hide-details-mode my-dired-hide-details-mode
+  (lambda ()
+    (dired-hide-details-mode 1))
+  :predicate '(dired-mode)
+  :group 'dired)
+
+(define-globalized-minor-mode global-dired-omit-mode dired-omit-mode
+  dired-omit-mode
+  :predicate '(dired-mode)
+  :group 'dired)
+
 (use-package dired
   :ensure nil
   :bind (:map dired-mode-map
 	      (")" . global-dired-omit-mode)
 	      ([remap dired-hide-details-mode] . global-dired-hide-details-mode))
   :hook (dired-mode . (lambda ()
-	  (auto-revert-mode)
-	  ;; press 'r' to visit parent directory
-	  (define-key dired-mode-map (kbd "r") 'dired-up-directory)
-	  ;; clicking on a folder opens it in the same window
-	  (define-key dired-mode-map [mouse-2] 'dired-mouse-find-file))))
+			;; (all-the-icons-dired-mode)
+			(auto-revert-mode)
+			;; press 'r' to visit parent directory
+			(define-key dired-mode-map (kbd "r") 'dired-up-directory)
+			;; clicking on a folder opens it in the same window
+			(define-key dired-mode-map [mouse-2] 'dired-mouse-find-file))))
 
 ;; dired sidebar
 (use-package dired-sidebar
@@ -189,18 +221,7 @@
   :bind ("C-x C-n" . dired-sidebar-toggle-sidebar)
   :hook ((dired-sidebar-mode . (lambda ()
  				 (define-key dired-sidebar-mode-map (kbd "r") 'dired-sidebar-up-directory)
-				 (setq dired-hide-details-hide-symlink-targets t)
-				 (dired-omit-mode 1)))))
-
-;; make dired-omit-mode and dired-hide-details-mode persist across buffers
-(define-globalized-minor-mode global-dired-omit-mode dired-omit-mode
-  :predicate '(dired-mode)
-  :group 'dired)
-
-(define-globalized-minor-mode global-dired-hide-details-mode dired-hide-details-mode
-  dired-hide-details-mode
-  :predicate '(dired-mode)
-  :group 'dired)
+				 (setq dired-hide-details-hide-symlink-targets t)))))
 
 ;; (load "dired+")
 ;; (diredp-toggle-find-file-reuse-dir 1)
@@ -216,6 +237,7 @@
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -304,6 +326,8 @@
 (global-set-key (kbd "C-c l") #'org-store-link)
 (global-set-key (kbd "C-c a") #'org-agenda)
 (global-set-key (kbd "C-c c") #'org-capture)
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;       AGDA        ;;
