@@ -15,6 +15,7 @@
  '(dired-omit-files
    "\\`[.]?#\\|\\`[.][.]?\\'\\|Google Drive\\|^\\..+$\\|pCloud Drive")
  '(dired-sidebar-use-one-instance t)
+ '(electric-pair-mode t)
  '(eshell-output-filter-functions
    '(eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt))
  '(eshell-scroll-to-bottom-on-output nil)
@@ -26,7 +27,10 @@
  '(global-visual-line-mode t)
  '(haskell-font-lock-symbols nil)
  '(haskell-tags-on-save t)
+ '(inhibit-startup-screen t)
+ '(initial-major-mode 'org-mode)
  '(line-spacing 0.1)
+ '(max-lisp-eval-depth 10000)
  '(message-send-mail-function 'message-smtpmail-send-it)
  '(org-agenda-files
    '("~/pcloud/organizational/personal.org" "~/pcloud/organizational/birthdays.org"))
@@ -53,8 +57,10 @@
  '(pdf-view-incompatible-modes
    '(linum-mode linum-relative-mode helm-linum-relative-mode nlinum-mode nlinum-hl-mode nlinum-relative-mode yalinum-mode display-line-numbers-mode))
  '(pixel-scroll-precision-mode nil)
+ '(ring-bell-function 'ignore)
  '(safe-local-variable-values '((eval turn-off-auto-fill)))
  '(scroll-bar-mode nil)
+ '(scroll-preserve-screen-position t)
  '(shell-file-name "/bin/zsh")
  '(tab-bar-new-tab-choice "~/")
  '(tab-stop-list '(2 4))
@@ -112,12 +118,8 @@
 ;;        MISC       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(setq max-lisp-eval-depth 10000)		;; increase the stack size
 (tool-bar-mode 0)				;; disable the tool bar
-(electric-pair-mode)				;; smart parentheses
-(setq ring-bell-function 'ignore)		;; disable the insufferable bell sound
 (global-unset-key (kbd "C-z"))			;; disable C-z
-(setq initial-major-mode 'org-mode)		;; start *scratch* buffer in org-mode
 (ac-config-default)				;; auto-completion
 (windmove-default-keybindings)			;; use Shift + arrow keys to switch windows
 (add-hook 'prog-mode-hook			;; line numbers
@@ -128,7 +130,6 @@
 (setq mac-option-modifier nil)
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))	;; for better scrolling behavior
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
-(setq scroll-preserve-screen-position t)
 (require 'exec-path-from-shell)			;; get $PATH working
 (exec-path-from-shell-initialize)
 (global-auto-revert-mode 1)                     ;; Auto refresh buffers
@@ -206,7 +207,6 @@
 	      (")" . global-dired-omit-mode)
 	      ([remap dired-hide-details-mode] . global-dired-hide-details-mode))
   :hook (dired-mode . (lambda ()
-			;; (all-the-icons-dired-mode)
 			(auto-revert-mode)
 			;; press 'r' to visit parent directory
 			(define-key dired-mode-map (kbd "r") 'dired-up-directory)
@@ -321,7 +321,6 @@
 ;; otherwise org-mode's bindings for S-<cursor>
 ;; compete with Windmove's bindings
 (setq org-replace-disputed-keys t)
-
 
 (global-set-key (kbd "C-c l") #'org-store-link)
 (global-set-key (kbd "C-c a") #'org-agenda)
