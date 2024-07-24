@@ -27,6 +27,7 @@
  '(global-visual-line-mode t)
  '(haskell-font-lock-symbols nil)
  '(haskell-tags-on-save t)
+ '(inhibit-startup-screen t)
  '(initial-major-mode 'org-mode)
  '(line-spacing 0.1)
  '(max-lisp-eval-depth 10000)

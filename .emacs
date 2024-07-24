@@ -126,17 +126,11 @@
 	  'display-line-numbers-mode)
 (pdf-loader-install)				;; for pdf-tools, on-demand loading
 (fset 'yes-or-no-p 'y-or-n-p)			;; Ask for y/n instead of yes/no
-(setq mac-command-modifier 'meta)		;; keyboard adjustments
-(setq mac-option-modifier nil)
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))	;; for better scrolling behavior
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
 (require 'exec-path-from-shell)			;; get $PATH working
 (exec-path-from-shell-initialize)
 (global-auto-revert-mode 1)                     ;; Auto refresh buffers
-(setq global-auto-revert-non-file-buffers t)
-(setq auto-revert-verbose nil)		        ;; ... but be quiet about it
-(setq inhibit-startup-message t)		;; startup screen
-(setq initial-scratch-message nil)
 (add-to-list 'load-path				;; load files in ~/.emacs.d/lisp
 	     (concat user-emacs-directory "lisp/" ))
 (use-package ansi-color				;; ANSI support in compilation buffers
@@ -145,6 +139,13 @@
   (ansi-color-apply-on-region compilation-filter-start (point)))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+(setq mac-command-modifier 'meta
+      mac-option-modifier nil
+      global-auto-revert-non-file-buffers t
+      auto-revert-verbose nil
+      inhibit-startup-message t
+      initial-scratch-message nil)
 
 
 
