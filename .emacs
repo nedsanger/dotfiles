@@ -148,6 +148,8 @@
 	     (concat user-emacs-directory "lisp/" ))
 (use-package ansi-color				;; ANSI support in compilation buffers
   :defer t)
+(setq backup-directory-alist			;; save all backups to ~/.emacs.d/backups
+      '(("." . "~/.emacs.d/backups")))
 (defun colorize-compilation-buffer ()
   (ansi-color-apply-on-region compilation-filter-start (point)))
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
