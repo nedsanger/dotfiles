@@ -1,6 +1,6 @@
 path+=($HOME'/bin/')
 path+=($HOME'/.local/bin')
-path+=($HOME'/.emacs.d/doom/bin/')
+path+=($HOME'/.ghcup/bin')
 
 export EDITOR=/Applications/Emacs.app/Contents/MacOS/Emacs
 

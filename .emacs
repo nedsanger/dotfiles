@@ -6,6 +6,8 @@
  '(column-number-mode t)
  '(comint-process-echoes t)
  '(comint-scroll-show-maximum-output nil)
+ '(company-idle-delay 0)
+ '(company-minimum-prefix-length 2)
  '(custom-enabled-themes '(vscode-dark-plus))
  '(custom-safe-themes
    '("993aac313027a1d6e70d45b98e121492c1b00a0daa5a8629788ed7d523fe62c1" default))
@@ -19,6 +21,9 @@
  '(eshell-output-filter-functions
    '(eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt))
  '(eshell-scroll-to-bottom-on-output nil)
+ '(flycheck-auto-display-errors-after-checking nil)
+ '(flycheck-display-errors-delay 0)
+ '(flycheck-display-errors-function 'flycheck-display-error-messages-unless-error-list)
  '(gc-cons-threshold 12800000)
  '(global-auto-revert-mode nil)
  '(global-dired-omit-modes '(dired-mode))
@@ -30,6 +35,12 @@
  '(inhibit-startup-screen t)
  '(initial-major-mode 'org-mode)
  '(line-spacing 0.1)
+ '(lsp-haskell-plugin-ghcide-type-lenses-global-on nil)
+ '(lsp-headerline-breadcrumb-enable nil)
+ '(lsp-keymap-prefix "C-c C-w")
+ '(lsp-lens-enable nil)
+ '(lsp-ui-sideline-show-code-actions nil)
+ '(lsp-ui-sideline-show-diagnostics nil)
  '(max-lisp-eval-depth 10000)
  '(message-send-mail-function 'message-smtpmail-send-it)
  '(org-agenda-files
@@ -53,7 +64,7 @@
      ("melpa" . "https://melpa.org/packages/")
      ("nongnu elpa" . "https://elpa.nongnu.org/nongnu/")))
  '(package-selected-packages
-   '(ace-window 2bit 2048-game 0xc 0x0 0blayout yasnippet lsp-mode rustic rust-mode attrap flymake-flycheck flymake-haskell-multi dante visual-regexp-steroids readline-complete elpy scribble-mode company-coq proof-general vscode-dark-plus-theme exec-path-from-shell lean-mode calfw-cal dired-sidebar visual-regexp visual-fill-column sweeprolog compat racket-mode pdf-tools auctex auto-complete markdown-mode haskell-mode))
+   '(lsp-ui lsp-haskell ob-rust ace-window 2bit 2048-game 0xc 0x0 0blayout yasnippet lsp-mode rustic rust-mode attrap flymake-flycheck flymake-haskell-multi dante visual-regexp-steroids readline-complete elpy scribble-mode company-coq proof-general vscode-dark-plus-theme exec-path-from-shell lean-mode calfw-cal dired-sidebar visual-regexp visual-fill-column sweeprolog compat racket-mode pdf-tools auctex auto-complete markdown-mode haskell-mode))
  '(pdf-view-incompatible-modes
    '(linum-mode linum-relative-mode helm-linum-relative-mode nlinum-mode nlinum-hl-mode nlinum-relative-mode yalinum-mode display-line-numbers-mode))
  '(pixel-scroll-precision-mode nil)
@@ -109,6 +120,7 @@
  '(diredp-write-priv ((t (:foreground "#D16969"))))
  '(fixed-pitch ((t nil)))
  '(fixed-pitch-serif ((t nil)))
+ '(flycheck-info ((t nil)))
  '(tooltip ((t (:foreground "black" :background "lightyellow" :inherit ##))))
  '(variable-pitch ((t nil))))
 
@@ -129,6 +141,7 @@
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))	;; for better scrolling behavior
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
 (require 'exec-path-from-shell)			;; get $PATH working
+(require 'lsp)
 (exec-path-from-shell-initialize)
 (global-auto-revert-mode 1)                     ;; Auto refresh buffers
 (add-to-list 'load-path				;; load files in ~/.emacs.d/lisp
@@ -141,7 +154,7 @@
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 (setq mac-command-modifier 'meta
-      mac-option-modifier nil
+      mac-option-modifier 'super
       global-auto-revert-non-file-buffers t
       auto-revert-verbose nil
       inhibit-startup-message t
@@ -176,7 +189,7 @@
 ;; and dired-hide-details-mode a global mode which
 ;; doesn't apply in the dired sidebar
 (define-minor-mode my-dired-hide-details-mode
-  "Toggles dired-hide-details-mode in all dired buffers except for the dired sidebar."
+  "Enabling this mode toggles dired-hide-details-mode in all dired buffers except for the dired sidebar."
   :init-value nil
   :group 'dired)
 
@@ -350,22 +363,31 @@
 ;;      HASKELL      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package dante
-  :defer t ; ask use-package to install the package
-  :after haskell-mode
-  :commands 'dante-mode
-  :init
-  (add-hook 'haskell-mode-hook 'flycheck-mode)
-;;  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
-  (add-hook 'haskell-mode-hook 'dante-mode)
-  (add-hook 'haskell-mode-hook
-            (defun my-fix-hs-eldoc ()
-              (setq eldoc-documentation-strategy #'eldoc-documentation-default)))
-  :config
-  (require 'flymake-flycheck)
-  (defalias 'flymake-hlint
-    (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
-  (add-to-list 'flymake-diagnostic-functions 'flymake-hlint))
+(require 'lsp-haskell)
+(add-hook 'haskell-mode-hook #'lsp)
+(add-hook 'haskell-literate-mode-hook #'lsp)
+
+(add-hook 'haskell-mode-hook (lambda () (auto-complete-mode -1)))
+(add-hook 'haskell-literate-mode-hook (lambda () (auto-complete-mode -1)))
+
+;; (use-package dante
+;;   :defer t ; ask use-package to install the package
+;;   :after haskell-mode
+;;   :commands 'dante-mode
+;;   :init
+;;   (add-hook 'haskell-mode-hook 'flycheck-mode)
+;; ;;  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
+;;   (add-hook 'haskell-mode-hook 'dante-mode)
+;;   (add-hook 'haskell-mode-hook
+;;             (defun my-fix-hs-eldoc ()
+;;               (setq eldoc-documentation-strategy #'eldoc-documentation-default)))
+;;   (add-hook 'haskell-mode-hook #'lsp)
+;;   (add-hook 'haskell-literate-mode-hook #'lsp)
+;;   :config
+;;   (require 'flymake-flycheck)
+;;   (defalias 'flymake-hlint
+;;     (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
+;;   (add-to-list 'flymake-diagnostic-functions 'flymake-hlint))
 
 ;; key bindings
 (eval-after-load 'haskell-mode '(progn
@@ -381,10 +403,6 @@
   (define-key haskell-cabal-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
   (define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
   (define-key haskell-cabal-mode-map (kbd "C-c c") 'haskell-process-cabal)))
-
-(let ((my-cabal-path (expand-file-name "~/.ghcup/bin")))
-  (setenv "PATH" (concat my-cabal-path path-separator (getenv "PATH")))
-  (add-to-list 'exec-path my-cabal-path))
 
 
 
