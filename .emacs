@@ -11,14 +11,14 @@
  '(custom-enabled-themes '(vscode-dark-plus))
  '(custom-safe-themes
    '("993aac313027a1d6e70d45b98e121492c1b00a0daa5a8629788ed7d523fe62c1" default))
- '(dired-hide-details-hide-symlink-targets t)
+ '(diredhide-details-hide-symlink-targets t)
  '(dired-kill-when-opening-new-dired-buffer t)
  '(dired-listing-switches "-lhaL")
  '(dired-omit-files
    "\\`[.]?#\\|\\`[.][.]?\\'\\|Google Drive\\|^\\..+$\\|pCloud Drive")
  '(dired-sidebar-use-one-instance t)
  '(electric-pair-mode t)
- '(eshell-output-filter-functions
+ '(eshell-output-filter-functionsb
    '(eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt))
  '(eshell-scroll-to-bottom-on-output nil)
  '(flycheck-auto-display-errors-after-checking nil)
@@ -92,32 +92,6 @@
  '(dired-subtree-depth-4-face ((t nil)))
  '(dired-subtree-depth-5-face ((t nil)))
  '(dired-subtree-depth-6-face ((t nil)))
- '(diredp-compressed-file-name ((t nil)))
- '(diredp-compressed-file-suffix ((t nil)))
- '(diredp-deletion ((t (:foreground "#F44747"))))
- '(diredp-deletion-file-name ((t (:foreground "#F44747"))))
- '(diredp-dir-heading ((t (:foreground "#C8C8C8"))))
- '(diredp-dir-name ((t (:foreground "#569cd6"))))
- '(diredp-dir-priv ((t (:foreground "#D16969"))))
- '(diredp-exec-priv ((t (:foreground "#D16969"))))
- '(diredp-executable-tag ((t (:foreground "#D16969"))))
- '(diredp-file-name ((t (:foreground "#D4D4D4"))))
- '(diredp-file-suffix ((t (:foreground "##D4D4D4"))))
- '(diredp-flag-mark ((t (:foreground "#C586C0"))))
- '(diredp-flag-mark-line ((t (:foreground "#C586C0"))))
- '(diredp-ignored-file-name ((t (:foreground "#D4D4D4"))))
- '(diredp-link-priv ((t (:foreground "#D16969"))))
- '(diredp-mode-line-flagged ((t (:foreground "#D16969"))))
- '(diredp-mode-line-marked ((t (:foreground "#D16969"))))
- '(diredp-no-priv ((t (:foreground "#D16969"))))
- '(diredp-number ((t (:foreground "#CE9178"))))
- '(diredp-omit-file-name ((t (:inherit diredp-ignored-file-name))))
- '(diredp-other-priv ((t (:foreground "#D16969"))))
- '(diredp-rare-priv ((t (:foreground "#D16969"))))
- '(diredp-read-priv ((t (:foreground "#D16969"))))
- '(diredp-symlink ((t (:foreground "#51B6C4"))))
- '(diredp-tagged-autofile-name ((t nil)))
- '(diredp-write-priv ((t (:foreground "#D16969"))))
  '(fixed-pitch ((t nil)))
  '(fixed-pitch-serif ((t nil)))
  '(flycheck-info ((t nil)))
@@ -130,6 +104,12 @@
 ;;        MISC       ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+(setq mac-command-modifier 'meta
+      global-auto-revert-non-file-buffers t
+      auto-revert-verbose nil
+      inhibit-startup-message t
+      initial-scratch-message nil)
+ 
 (tool-bar-mode 0)				;; disable the tool bar
 (global-unset-key (kbd "C-z"))			;; disable C-z
 (ac-config-default)				;; auto-completion
@@ -141,7 +121,6 @@
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))	;; for better scrolling behavior
 (global-set-key (kbd "M-p") (kbd "C-u 1 M-v"))
 (require 'exec-path-from-shell)			;; get $PATH working
-(require 'lsp)
 (exec-path-from-shell-initialize)
 (global-auto-revert-mode 1)                     ;; Auto refresh buffers
 (add-to-list 'load-path				;; load files in ~/.emacs.d/lisp
@@ -155,12 +134,22 @@
 (add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
-(setq mac-command-modifier 'meta
-      mac-option-modifier 'super
-      global-auto-revert-non-file-buffers t
-      auto-revert-verbose nil
-      inhibit-startup-message t
-      initial-scratch-message nil)
+;; use 'C-c t' to toggle the theme
+(defun toggle-theme ()
+  (interactive)
+  (if (eq (car custom-enabled-themes) 'vscode-dark-plus)
+      (disable-theme 'vscode-dark-plus)
+    (enable-theme 'vscode-dark-plus)))
+(global-set-key (kbd "C-c t") 'toggle-theme)
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;
+;;        LSP        ;;
+;;;;;;;;;;;;;;;;;;;;;;;
+
+(use-package lsp-mode
+  :defer t)
 
 
 
@@ -239,28 +228,14 @@
  				 (define-key dired-sidebar-mode-map (kbd "r") 'dired-sidebar-up-directory)
 				 (setq dired-hide-details-hide-symlink-targets t)))))
 
-;; (load "dired+")
-;; (diredp-toggle-find-file-reuse-dir 1)
-
-;; (load "dired-collapse")
-;; (global-dired-collapse-mode)
-
 (load "dired-subtree")
-
 (use-package dired-subtree
   :ensure t
+  :defer t
   :after dired
   :config
   (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
   (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;
-;;    ACE-WINDOW     ;;
-;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (global-set-key (kbd "M-s") 'ace-window)
 
 
 
@@ -298,18 +273,18 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;
-;;      PYTHON       ;;
-;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;x
+;; ;;      PYTHON       ;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package elpy
-  :ensure t
-  :defer t
-  :init
-  (elpy-enable))
+;; (use-package elpy
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (elpy-enable))
 
-(setq elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules))
-(setq python-shell-completion-native-enable nil)	;; purely to avoid an annoying bug
+;; (setq elpy-modules (delq 'elpy-module-highlight-indentation elpy-modules))
+;; (setq python-shell-completion-native-enable nil)	;; purely to avoid an annoying bug
 
 
 
@@ -365,31 +340,13 @@
 ;;      HASKELL      ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'lsp-haskell)
+(use-package lsp-haskell
+  :defer t)
 (add-hook 'haskell-mode-hook #'lsp)
 (add-hook 'haskell-literate-mode-hook #'lsp)
 
 (add-hook 'haskell-mode-hook (lambda () (auto-complete-mode -1)))
 (add-hook 'haskell-literate-mode-hook (lambda () (auto-complete-mode -1)))
-
-;; (use-package dante
-;;   :defer t ; ask use-package to install the package
-;;   :after haskell-mode
-;;   :commands 'dante-mode
-;;   :init
-;;   (add-hook 'haskell-mode-hook 'flycheck-mode)
-;; ;;  (remove-hook 'flymake-diagnostic-functions 'flymake-proc-legacy-flymake)
-;;   (add-hook 'haskell-mode-hook 'dante-mode)
-;;   (add-hook 'haskell-mode-hook
-;;             (defun my-fix-hs-eldoc ()
-;;               (setq eldoc-documentation-strategy #'eldoc-documentation-default)))
-;;   (add-hook 'haskell-mode-hook #'lsp)
-;;   (add-hook 'haskell-literate-mode-hook #'lsp)
-;;   :config
-;;   (require 'flymake-flycheck)
-;;   (defalias 'flymake-hlint
-;;     (flymake-flycheck-diagnostic-function-for 'haskell-hlint))
-;;   (add-to-list 'flymake-diagnostic-functions 'flymake-hlint))
 
 ;; key bindings
 (eval-after-load 'haskell-mode '(progn
@@ -429,8 +386,8 @@
   :defer t)
 
 (add-hook 'rust-mode-hook 'lsp-deferred)
-(require 'yasnippet)
-(yas-global-mode 1)
+;; (require 'yasnippet)
+;; (yas-global-mode 1)
 
 
 
