@@ -11,12 +11,12 @@
  '(custom-enabled-themes '(vscode-dark-plus))
  '(custom-safe-themes
    '("993aac313027a1d6e70d45b98e121492c1b00a0daa5a8629788ed7d523fe62c1" default))
- '(diredhide-details-hide-symlink-targets t)
  '(dired-kill-when-opening-new-dired-buffer t)
  '(dired-listing-switches "-lhaL")
  '(dired-omit-files
    "\\`[.]?#\\|\\`[.][.]?\\'\\|Google Drive\\|^\\..+$\\|pCloud Drive")
  '(dired-sidebar-use-one-instance t)
+ '(dired-hide-details-hide-symlink-targets t)
  '(electric-pair-mode t)
  '(eshell-output-filter-functionsb
    '(eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt))
@@ -64,7 +64,7 @@
      ("melpa" . "https://melpa.org/packages/")
      ("nongnu elpa" . "https://elpa.nongnu.org/nongnu/")))
  '(package-selected-packages
-   '(lsp-ui lsp-haskell ob-rust ace-window 2bit 2048-game 0xc 0x0 0blayout yasnippet lsp-mode rustic rust-mode attrap flymake-flycheck flymake-haskell-multi dante visual-regexp-steroids readline-complete elpy scribble-mode company-coq proof-general vscode-dark-plus-theme exec-path-from-shell lean-mode calfw-cal dired-sidebar visual-regexp visual-fill-column sweeprolog compat racket-mode pdf-tools auctex auto-complete markdown-mode haskell-mode))
+   '(magit lsp-ui lsp-haskell ob-rust ace-window 2bit 2048-game 0xc 0x0 0blayout yasnippet lsp-mode rustic rust-mode attrap flymake-flycheck flymake-haskell-multi dante visual-regexp-steroids readline-complete elpy scribble-mode company-coq proof-general vscode-dark-plus-theme exec-path-from-shell lean-mode calfw-cal dired-sidebar visual-regexp visual-fill-column sweeprolog compat racket-mode pdf-tools auctex auto-complete markdown-mode haskell-mode))
  '(pdf-view-incompatible-modes
    '(linum-mode linum-relative-mode helm-linum-relative-mode nlinum-mode nlinum-hl-mode nlinum-relative-mode yalinum-mode display-line-numbers-mode))
  '(pixel-scroll-precision-mode nil)
@@ -105,6 +105,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq mac-command-modifier 'meta
+      mac-option-modifier 'none
       global-auto-revert-non-file-buffers t
       auto-revert-verbose nil
       inhibit-startup-message t
