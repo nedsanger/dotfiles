@@ -11,12 +11,12 @@
  '(custom-enabled-themes '(vscode-dark-plus))
  '(custom-safe-themes
    '("993aac313027a1d6e70d45b98e121492c1b00a0daa5a8629788ed7d523fe62c1" default))
+ '(dired-hide-details-hide-symlink-targets t)
  '(dired-kill-when-opening-new-dired-buffer t)
  '(dired-listing-switches "-lhaL")
  '(dired-omit-files
    "\\`[.]?#\\|\\`[.][.]?\\'\\|Google Drive\\|^\\..+$\\|pCloud Drive")
  '(dired-sidebar-use-one-instance t)
- '(dired-hide-details-hide-symlink-targets t)
  '(electric-pair-mode t)
  '(eshell-output-filter-functionsb
    '(eshell-handle-control-codes eshell-handle-ansi-color eshell-watch-for-password-prompt))
@@ -27,7 +27,7 @@
  '(gc-cons-threshold 12800000)
  '(global-auto-revert-mode nil)
  '(global-dired-omit-modes '(dired-mode))
- '(global-display-line-numbers-mode nil)
+ '(global-display-line-numbers-mode t)
  '(global-hl-line-mode nil)
  '(global-visual-line-mode t)
  '(haskell-font-lock-symbols nil)
@@ -115,8 +115,6 @@
 (global-unset-key (kbd "C-z"))			;; disable C-z
 (ac-config-default)				;; auto-completion
 (windmove-default-keybindings)			;; use Shift + arrow keys to switch windows
-(add-hook 'prog-mode-hook			;; line numbers
-	  'display-line-numbers-mode)
 (pdf-loader-install)				;; for pdf-tools, on-demand loading
 (fset 'yes-or-no-p 'y-or-n-p)			;; Ask for y/n instead of yes/no
 (global-set-key (kbd "M-n") (kbd "C-u 1 C-v"))	;; for better scrolling behavior
@@ -259,7 +257,6 @@
 			     (turn-on-reftex)
 			     ;; improve appearance
 			     (prettify-symbols-mode)
-			     (display-line-numbers-mode)
 			     (visual-fill-column-mode)
 			     (setq fill-column 100)))
 
